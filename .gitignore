@@ -1,0 +1,8 @@
+.DS_Store
+bin/*
+include/*
+lib/*
+share/*
+.Python
+.*.swp
+*.py[co]
