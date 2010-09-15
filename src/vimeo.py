@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import os
+import ConfigParser
+from optparse import OptionParser
 import re
 import mechanize
 import cookielib
@@ -17,7 +20,6 @@ class Vimeo(object):
         self.browser.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
     def getToken(self):
-        #input type="hidden" id="xsrft" class="xsrft" name="token" value="eb0fe03ceac5796bdde1ee2c8c9166cd"
         tokenRe = re.compile('<input type="hidden" id="xsrft" class="xsrft" name="token" value="(.*)"')
         m = tokenRe.search(self.html)
         if m:
@@ -62,8 +64,29 @@ class Vimeo(object):
         self.submit()
 
 def main():
+    config_filename = "%s/.vimeo-uploader.cfg" % os.getenv("HOME")
+
+    parser = OptionParser()
+    parser.add_option("-c", "--config",
+        dest="config_filename",
+        default=config_filename,
+        help="Config file name. Defaults to %s" % config_filename
+    )
+
+    (options, args) = parser.parse_args()
+    if os.path.exists(options.config_filename):
+        config = ConfigParser.RawConfigParser()
+        config.read(options.config_filename)
+        username = config.get('user', 'username')
+        password = config.get('user', 'password')
+    else:
+        username = raw_input('Please enter your username: ')
+        password = raw_input('Please enter your password: ')
+    
+    print '%s - %s' % (username, password)
+
     v = Vimeo()
-    v.login('username', 'password')
+    v.login(username, password)
     v.upload('a_video_file')
 
 if __name__ == "__main__":
