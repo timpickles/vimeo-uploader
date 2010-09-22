@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import os
 import ConfigParser
 from optparse import OptionParser
@@ -88,6 +89,11 @@ def main():
         parser.error("Please specify the video file to upload")
     else:
         filename = args[0]
+        if not os.path.isfile(filename):
+            print 'Cannot find the file %s' % filename
+            sys.exit()
+            return
+
         print "Preparing to upload file: %s" % filename
         v = Vimeo()
         v.login(username, password)
