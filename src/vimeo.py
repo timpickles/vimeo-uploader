@@ -66,7 +66,8 @@ class Vimeo(object):
 def main():
     config_filename = "%s/.vimeo-uploader.cfg" % os.getenv("HOME")
 
-    parser = OptionParser()
+    usage = "usage: %prog [options] filename"
+    parser = OptionParser(usage=usage)
     parser.add_option("-c", "--config",
         dest="config_filename",
         default=config_filename,
@@ -83,11 +84,14 @@ def main():
         username = raw_input('Please enter your username: ')
         password = raw_input('Please enter your password: ')
     
-    print '%s - %s' % (username, password)
-
-    v = Vimeo()
-    v.login(username, password)
-    v.upload('a_video_file')
+    if len(args) != 1:
+        parser.error("Please specify the video file to upload")
+    else:
+        filename = args[0]
+        print "Preparing to upload file: %s" % filename
+        v = Vimeo()
+        v.login(username, password)
+        v.upload(filename)
 
 if __name__ == "__main__":
     main()
