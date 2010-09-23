@@ -6,3 +6,4 @@ share/*
 .Python
 .*.swp
 *.py[co]
+pip-log.txt
